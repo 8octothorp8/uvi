@@ -77,15 +77,45 @@ main { flex:1; padding: 30px 20px; }
 .progress-list {
   display:flex;
   flex-wrap:wrap;
-  gap:10px;
+  gap:15px;
   margin-top:20px;
 }
+.progress-item {
+  position:relative;
+}
 .progress-item img {
-  width:120px;
+  width:180px;
   height:auto;
   cursor:pointer;
   border-radius:8px;
   border:2px solid #fff;
+}
+.menu-button {
+  position:absolute;
+  top:8px;
+  right:8px;
+  cursor:pointer;
+  font-size:20px;
+  color:#fff;
+}
+.menu {
+  display:none;
+  position:absolute;
+  top:30px;
+  right:8px;
+  background:#111;
+  border:1px solid #444;
+  border-radius:6px;
+  padding:5px;
+  z-index:10;
+}
+.menu div {
+  padding:8px 12px;
+  cursor:pointer;
+  font-size:14px;
+}
+.menu div:hover {
+  background:#222;
 }
 </style>
 </head>
@@ -114,10 +144,17 @@ function saveProgress(id, progress) {
   localStorage.setItem("uviProgress", JSON.stringify(data));
 }
 
+function removeFromProgress(id) {
+  const data = getProgress();
+  delete data[id];
+  localStorage.setItem("uviProgress", JSON.stringify(data));
+  loadProgressList();
+}
+
 function loadProgressList() {
   const data = getProgress();
   if (Object.keys(data).length === 0) return;
-
+  results.innerHTML = "<h3>Watch History</h3>";
   const container = document.createElement("div");
   container.className = "progress-list";
   results.appendChild(container);
@@ -128,12 +165,27 @@ function loadProgressList() {
       .then(dataItem => {
         const item = document.createElement("div");
         item.className = "progress-item";
-        item.innerHTML = `<img src="${dataItem.Poster}" alt="${dataItem.Title}">`;
-        item.addEventListener("click", () => {
+        item.innerHTML = `
+          <img src="${dataItem.Poster}" alt="${dataItem.Title}">
+          <div class="menu-button">⋮</div>
+          <div class="menu"><div class="remove">Remove from watch history</div></div>
+        `;
+        container.appendChild(item);
+
+        const menuButton = item.querySelector(".menu-button");
+        const menu = item.querySelector(".menu");
+        menuButton.addEventListener("click", () => {
+          menu.style.display = menu.style.display === "block" ? "none" : "block";
+        });
+
+        item.querySelector(".remove").addEventListener("click", () => {
+          removeFromProgress(id);
+        });
+
+        item.querySelector("img").addEventListener("click", () => {
           searchInput.value = dataItem.Title;
           performSearch(dataItem.Title, id);
         });
-        container.appendChild(item);
       });
   }
 }
@@ -180,7 +232,6 @@ function performSearch(query, forceId=null) {
           </div>
         </div>
       `;
-
       if (data.Type === "movie") {
         document.getElementById("playBtn").addEventListener("click", () => {
           document.getElementById("videoArea").innerHTML = `
@@ -189,7 +240,7 @@ function performSearch(query, forceId=null) {
             </div>
             <div class="spacer"></div>
           `;
-          saveProgress(data.imdbID, { type: "movie", time: 0 }); 
+          saveProgress(data.imdbID, { type: "movie", time: 0 });
         });
       }
       if (data.Type === "series") {
