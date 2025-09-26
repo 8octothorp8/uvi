@@ -1,213 +1,257 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>uvi — Home</title>
-  <style>
-    :root{
-      --logo-size: 48px;
-      --bg-top: #000000;
-      --bg-bottom: #1f1f1f;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>uvi — Home</title>
+<style>
+:root{
+  --logo-size: 48px;
+  --bg-top: #000000;
+  --bg-bottom: #1f1f1f;
+}
 
-    * { box-sizing: border-box; margin:0; padding:0; }
+* { box-sizing: border-box; margin:0; padding:0; }
 
-    html,body {
-      height:100%;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+html,body {
+  height:100%;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
 
-    body{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      background-attachment: fixed;
-      color:#fff;
-    }
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  background-attachment: fixed;
+  color:#fff;
+}
 
-    header.topbar{
-      display:flex;
-      align-items:center;
-      gap:1rem;
-      padding:16px 20px;
-    }
+header.topbar{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  padding:16px 20px;
+}
 
-    .logo {
-      flex: 0 0 auto;
-      height: var(--logo-size);
-      user-select:none;
-    }
+.logo {
+  flex: 0 0 auto;
+  height: var(--logo-size);
+  user-select:none;
+}
 
-    .search-wrap {
-      flex:1 1 auto;
-      display:flex;
-      align-items:center;
-    }
+.search-wrap {
+  flex:1 1 auto;
+  display:flex;
+  align-items:center;
+}
 
-    .search-input {
-      width:100%;
-      height: var(--logo-size);
-      background:#000000;
-      color:#ffffff;
-      border:2px solid rgba(255,255,255,0.95);
-      border-radius:999px;
-      padding:0 18px;
-      font-size: calc(var(--logo-size) * 0.45);
-      outline:none;
-      caret-color:#ffffff;
-    }
+.search-input {
+  width:100%;
+  height: var(--logo-size);
+  background:#000000;
+  color:#ffffff;
+  border:2px solid rgba(255,255,255,0.95);
+  border-radius:999px;
+  padding:0 18px;
+  font-size: calc(var(--logo-size) * 0.45);
+  outline:none;
+  caret-color:#ffffff;
+}
 
-    .search-input:focus {
-      box-shadow:0 0 18px rgba(255,255,255,0.06);
-      border-color:#ffffff;
-    }
+.search-input:focus {
+  box-shadow:0 0 18px rgba(255,255,255,0.06);
+  border-color:#ffffff;
+}
 
-    main {
-      flex:1;
-      padding: 30px 20px;
-    }
+main {
+  flex:1;
+  padding: 30px 20px;
+}
 
-    .movie {
-      display:flex;
-      flex-wrap:wrap;
-      gap:20px;
-      align-items:flex-start;
-    }
+.movie {
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  align-items:flex-start;
+}
 
-    .movie img {
-      max-width: 300px;
-      width:100%;
-      border-radius:12px;
-      box-shadow:0 0 12px rgba(0,0,0,0.6);
-      object-fit:cover;
-    }
+.movie img {
+  max-width: 300px;
+  width:100%;
+  border-radius:12px;
+  box-shadow:0 0 12px rgba(0,0,0,0.6);
+  object-fit:cover;
+}
 
-    .movie-details {
-      flex:1;
-      min-width:250px;
-    }
+.movie-details {
+  flex:1;
+  min-width:250px;
+}
 
-    .movie-details h2 {
-      margin:0;
-      font-size:2rem;
-      font-weight:700;
-    }
+.movie-details h2 {
+  margin:0;
+  font-size:2rem;
+  font-weight:700;
+}
 
-    .movie-details .meta {
-      margin: 8px 0;
-      font-size:1rem;
-      color:#bbb;
-    }
+.movie-details .meta {
+  margin: 8px 0;
+  font-size:1rem;
+  color:#bbb;
+}
 
-    .movie-details p {
-      font-size:1rem;
-      line-height:1.5;
-      margin-top:12px;
-    }
+.movie-details p {
+  font-size:1rem;
+  line-height:1.5;
+  margin-top:12px;
+}
 
-    .play-btn {
-      display:inline-block;
-      margin-top:20px;
-      padding:12px 30px;
-      border:2px solid #fff;
-      border-radius:999px;
-      background:#000;
-      color:#fff;
-      font-size:1.2rem;
-      cursor:pointer;
-      text-align:center;
-      user-select:none;
-    }
+.play-btn {
+  display:inline-block;
+  margin-top:20px;
+  padding:12px 30px;
+  border:2px solid #fff;
+  border-radius:999px;
+  background:#000;
+  color:#fff;
+  font-size:1.2rem;
+  cursor:pointer;
+  text-align:center;
+  user-select:none;
+}
 
-    .video-container {
-      margin-top:25px;
-      width:100%;
-      max-width:900px;
-    }
+.season-episode {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+}
 
-    .spacer {
-      height:800px;
-    }
-  </style>
+.season-episode input {
+  width:60px;
+  padding:8px;
+  border:2px solid #fff;
+  border-radius:8px;
+  background:#000;
+  color:#fff;
+  font-size:1rem;
+  text-align:center;
+}
+
+.video-container {
+  margin-top:25px;
+  width:100%;
+  max-width:900px;
+}
+
+.spacer {
+  height:800px;
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <img src="logo.png" alt="uvi logo" class="logo" />
-    <div class="search-wrap">
-      <input id="site-search" class="search-input" type="search" autocomplete="off" spellcheck="false" />
-    </div>
-  </header>
+<header class="topbar">
+  <img src="logo.png" alt="uvi logo" class="logo" />
+  <div class="search-wrap">
+    <input id="site-search" class="search-input" type="search" autocomplete="off" spellcheck="false" />
+  </div>
+</header>
 
-  <main id="results"></main>
+<main id="results"></main>
 
-  <script>
-    const searchInput = document.getElementById("site-search");
-    const results = document.getElementById("results");
-    const API_KEY = "f9948667";
+<script>
+const searchInput = document.getElementById("site-search");
+const results = document.getElementById("results");
+const API_KEY = "f9948667";
 
-    searchInput.addEventListener("keydown", async (e) => {
-      if (e.key === "Enter") {
-        let query = searchInput.value.trim();
-        if (!query) return;
+searchInput.addEventListener("keydown", async (e) => {
+  if (e.key === "Enter") {
+    let query = searchInput.value.trim();
+    if (!query) return;
 
-        let year = "";
-        const words = query.split(" ");
-        const lastWord = words[words.length - 1];
-        if (/^\d+$/.test(lastWord) && parseInt(lastWord) > 1850) {
-          year = lastWord;
-          words.pop();
-          query = words.join(" ");
+    let year = "";
+    const words = query.split(" ");
+    const lastWord = words[words.length - 1];
+    if (/^\d+$/.test(lastWord) && parseInt(lastWord) > 1850) {
+      year = lastWord;
+      words.pop();
+      query = words.join(" ");
+    }
+
+    const url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}${year ? "&y=" + year : ""}&apikey=${API_KEY}`;
+    results.innerHTML = "<p>Loading...</p>";
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.Response === "True") {
+        let playButtonHTML = "";
+
+        if (data.Type === "movie") {
+          playButtonHTML = `
+            <div class="play-btn" id="playBtn">▶ Play</div>
+            <div id="videoArea"></div>
+          `;
         }
 
-        const url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}${year ? "&y=" + year : ""}&apikey=${API_KEY}`;
-        results.innerHTML = "<p>Loading...</p>";
+        if (data.Type === "series") {
+          playButtonHTML = `
+            <div class="season-episode">
+              <input type="number" id="seasonInput" placeholder="Season" min="1">
+              <input type="number" id="episodeInput" placeholder="Episode" min="1">
+              <div class="play-btn" id="playBtn">▶ Play</div>
+            </div>
+            <div id="videoArea"></div>
+          `;
+        }
 
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
+        results.innerHTML = `
+          <div class="movie">
+            <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
+            <div class="movie-details">
+              <h2>${data.Title}</h2>
+              <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
+              <p>${data.Plot}</p>
+              ${playButtonHTML}
+            </div>
+          </div>
+        `;
 
-          if (data.Response === "True") {
-            let playButtonHTML = "";
-            if (data.Type === "movie") {
-              playButtonHTML = `
-                <div class="play-btn" id="playBtn">▶ Play</div>
-                <div id="videoArea"></div>
-              `;
-            }
-
-            results.innerHTML = `
-              <div class="movie">
-                <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
-                <div class="movie-details">
-                  <h2>${data.Title}</h2>
-                  <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
-                  <p>${data.Plot}</p>
-                  ${playButtonHTML}
-                </div>
+        if (data.Type === "movie") {
+          document.getElementById("playBtn").addEventListener("click", () => {
+            document.getElementById("videoArea").innerHTML = `
+              <div class="video-container">
+                <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
               </div>
+              <div class="spacer"></div>
             `;
-
-            if (data.Type === "movie") {
-              document.getElementById("playBtn").addEventListener("click", () => {
-                document.getElementById("videoArea").innerHTML = `
-                  <div class="video-container">
-                    <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
-                  </div>
-                  <div class="spacer"></div>
-                `;
-              });
-            }
-          } else {
-            results.innerHTML = "<p>No results found.</p>";
-          }
-        } catch (err) {
-          results.innerHTML = "<p>Error fetching movie data.</p>";
-          console.error(err);
+          });
         }
+
+        if (data.Type === "series") {
+          document.getElementById("playBtn").addEventListener("click", () => {
+            const season = document.getElementById("seasonInput").value || "1";
+            const episode = document.getElementById("episodeInput").value || "1";
+
+            document.getElementById("videoArea").innerHTML = `
+              <div class="video-container">
+                <iframe src="https://vidfast.pro/tv/${data.imdbID}/${season}/${episode}?autoPlay=true" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
+              </div>
+              <div class="spacer"></div>
+            `;
+          });
+        }
+      } else {
+        results.innerHTML = "<p>No results found.</p>";
       }
-    });
-  </script>
+    } catch (err) {
+      results.innerHTML = "<p>Error fetching movie data.</p>";
+      console.error(err);
+    }
+  }
+});
+</script>
 </body>
 </html>
