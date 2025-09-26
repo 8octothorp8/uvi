@@ -128,7 +128,7 @@
     }
 
     .spacer {
-      height:800px; /* big chunk of space to push down popups */
+      height:800px;
     }
   </style>
 </head>
@@ -162,6 +162,14 @@
           const data = await res.json();
 
           if (data.Response === "True") {
+            let playButtonHTML = "";
+            if (data.Type === "movie") {
+              playButtonHTML = `
+                <div class="play-btn" id="playBtn">▶ Play</div>
+                <div id="videoArea"></div>
+              `;
+            }
+
             results.innerHTML = `
               <div class="movie">
                 <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
@@ -169,20 +177,21 @@
                   <h2>${data.Title}</h2>
                   <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
                   <p>${data.Plot}</p>
-                  <div class="play-btn" id="playBtn">▶ Play</div>
-                  <div id="videoArea"></div>
+                  ${playButtonHTML}
                 </div>
               </div>
             `;
 
-            document.getElementById("playBtn").addEventListener("click", () => {
-              document.getElementById("videoArea").innerHTML = `
-                <div class="video-container">
-                  <iframe src="https://vidfast.pro/e/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
-                </div>
-                <div class="spacer"></div>
-              `;
-            });
+            if (data.Type === "movie") {
+              document.getElementById("playBtn").addEventListener("click", () => {
+                document.getElementById("videoArea").innerHTML = `
+                  <div class="video-container">
+                    <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
+                  </div>
+                  <div class="spacer"></div>
+                `;
+              });
+            }
           } else {
             results.innerHTML = "<p>No results found.</p>";
           }
