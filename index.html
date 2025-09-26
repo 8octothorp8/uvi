@@ -26,21 +26,21 @@
     .search-bar {
       display: flex;
       flex: 1;
-      height: 40px;
+      height: 45px;
     }
 
     .search-bar input[type="text"],
     .search-bar input[type="number"] {
       background: black;
-      border: 1px solid white;
+      border: 2px solid white;
       color: white;
-      border-radius: 8px;
-      padding: 0 10px;
+      border-radius: 20px;
+      padding: 0 12px;
       font-size: 16px;
     }
 
     .search-bar input[type="text"] {
-      flex: 7;
+      flex: 9;
       margin-right: 10px;
     }
 
@@ -151,6 +151,9 @@
         results.innerHTML = "<p>Movie not found.</p>";
       }
     });
+
+    // Autofocus search bar on page load
+    window.onload = () => searchInput.focus();
   </script>
 </body>
 </html>
