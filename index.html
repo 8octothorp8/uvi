@@ -10,14 +10,8 @@
   --bg-top: #000000;
   --bg-bottom: #1f1f1f;
 }
-
 * { box-sizing: border-box; margin:0; padding:0; }
-
-html,body {
-  height:100%;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-
+html,body { height:100%; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
 body{
   min-height:100vh;
   display:flex;
@@ -26,87 +20,34 @@ body{
   background-attachment: fixed;
   color:#fff;
 }
-
 header.topbar{
   display:flex;
   align-items:center;
   gap:1rem;
   padding:16px 20px;
 }
-
-.logo {
-  flex: 0 0 auto;
-  height: var(--logo-size);
-  user-select:none;
-}
-
-.search-wrap {
-  flex:1 1 auto;
-  display:flex;
-  align-items:center;
-}
-
+.logo { flex: 0 0 auto; height: var(--logo-size); user-select:none; }
+.search-wrap { flex:1 1 auto; display:flex; align-items:center; }
 .search-input {
   width:100%;
   height: var(--logo-size);
-  background:#000000;
-  color:#ffffff;
+  background:#000;
+  color:#fff;
   border:2px solid rgba(255,255,255,0.95);
   border-radius:999px;
   padding:0 18px;
   font-size: calc(var(--logo-size) * 0.45);
   outline:none;
-  caret-color:#ffffff;
+  caret-color:#fff;
 }
-
-.search-input:focus {
-  box-shadow:0 0 18px rgba(255,255,255,0.06);
-  border-color:#ffffff;
-}
-
-main {
-  flex:1;
-  padding: 30px 20px;
-}
-
-.movie {
-  display:flex;
-  flex-wrap:wrap;
-  gap:20px;
-  align-items:flex-start;
-}
-
-.movie img {
-  max-width: 300px;
-  width:100%;
-  border-radius:12px;
-  box-shadow:0 0 12px rgba(0,0,0,0.6);
-  object-fit:cover;
-}
-
-.movie-details {
-  flex:1;
-  min-width:250px;
-}
-
-.movie-details h2 {
-  margin:0;
-  font-size:2rem;
-  font-weight:700;
-}
-
-.movie-details .meta {
-  margin: 8px 0;
-  font-size:1rem;
-  color:#bbb;
-}
-
-.movie-details p {
-  font-size:1rem;
-  line-height:1.5;
-  margin-top:12px;
-}
-
+.search-input:focus { box-shadow:0 0 18px rgba(255,255,255,0.06); border-color:#fff; }
+main { flex:1; padding: 30px 20px; }
+.movie { display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+.movie img { max-width: 300px; width:100%; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.6); object-fit:cover; }
+.movie-details { flex:1; min-width:250px; }
+.movie-details h2 { margin:0; font-size:2rem; font-weight:700; }
+.movie-details .meta { margin: 8px 0; font-size:1rem; color:#bbb; }
+.movie-details p { font-size:1rem; line-height:1.5; margin-top:12px; }
 .play-btn {
   display:inline-block;
   margin-top:20px;
@@ -120,14 +61,7 @@ main {
   text-align:center;
   user-select:none;
 }
-
-.season-episode {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:20px;
-}
-
+.season-episode { display:flex; align-items:center; gap:10px; margin-top:20px; }
 .season-episode input {
   width:60px;
   padding:8px;
@@ -138,15 +72,20 @@ main {
   font-size:1rem;
   text-align:center;
 }
-
-.video-container {
-  margin-top:25px;
-  width:100%;
-  max-width:900px;
+.video-container { margin-top:25px; width:100%; max-width:900px; }
+.spacer { height:800px; }
+.progress-list {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px;
 }
-
-.spacer {
-  height:800px;
+.progress-item img {
+  width:120px;
+  height:auto;
+  cursor:pointer;
+  border-radius:8px;
+  border:2px solid #fff;
 }
 </style>
 </head>
@@ -165,93 +104,120 @@ const searchInput = document.getElementById("site-search");
 const results = document.getElementById("results");
 const API_KEY = "f9948667";
 
-searchInput.addEventListener("keydown", async (e) => {
-  if (e.key === "Enter") {
-    let query = searchInput.value.trim();
-    if (!query) return;
+function getProgress() {
+  return JSON.parse(localStorage.getItem("uviProgress") || "{}");
+}
 
-    let year = "";
-    const words = query.split(" ");
-    const lastWord = words[words.length - 1];
-    if (/^\d+$/.test(lastWord) && parseInt(lastWord) > 1850) {
-      year = lastWord;
-      words.pop();
-      query = words.join(" ");
-    }
+function saveProgress(id, progress) {
+  const data = getProgress();
+  data[id] = progress;
+  localStorage.setItem("uviProgress", JSON.stringify(data));
+}
 
-    const url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}${year ? "&y=" + year : ""}&apikey=${API_KEY}`;
-    results.innerHTML = "<p>Loading...</p>";
+function loadProgressList() {
+  const data = getProgress();
+  if (Object.keys(data).length === 0) return;
 
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
+  const container = document.createElement("div");
+  container.className = "progress-list";
+  results.appendChild(container);
 
-      if (data.Response === "True") {
-        let playButtonHTML = "";
+  for (let id in data) {
+    fetch(`https://www.omdbapi.com/?i=${id}&apikey=${API_KEY}`)
+      .then(res => res.json())
+      .then(dataItem => {
+        const item = document.createElement("div");
+        item.className = "progress-item";
+        item.innerHTML = `<img src="${dataItem.Poster}" alt="${dataItem.Title}">`;
+        item.addEventListener("click", () => {
+          searchInput.value = dataItem.Title;
+          performSearch(dataItem.Title, id);
+        });
+        container.appendChild(item);
+      });
+  }
+}
 
-        if (data.Type === "movie") {
-          playButtonHTML = `
-            <div class="play-btn" id="playBtn">▶ Play</div>
-            <div id="videoArea"></div>
-          `;
-        }
+function performSearch(query, forceId=null) {
+  let year = "";
+  const words = query.split(" ");
+  const lastWord = words[words.length - 1];
+  if (/^\d+$/.test(lastWord) && parseInt(lastWord) > 1850) {
+    year = lastWord;
+    words.pop();
+    query = words.join(" ");
+  }
 
-        if (data.Type === "series") {
-          playButtonHTML = `
-            <div class="season-episode">
-              <input type="number" id="seasonInput" placeholder="Season" min="1">
-              <input type="number" id="episodeInput" placeholder="Episode" min="1">
-              <div class="play-btn" id="playBtn">▶ Play</div>
-            </div>
-            <div id="videoArea"></div>
-          `;
-        }
+  const url = forceId ? `https://www.omdbapi.com/?i=${forceId}&apikey=${API_KEY}` :
+    `https://www.omdbapi.com/?t=${encodeURIComponent(query)}${year ? "&y=" + year : ""}&apikey=${API_KEY}`;
+  results.innerHTML = "<p>Loading...</p>";
 
-        results.innerHTML = `
-          <div class="movie">
-            <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
-            <div class="movie-details">
-              <h2>${data.Title}</h2>
-              <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
-              <p>${data.Plot}</p>
-              ${playButtonHTML}
-            </div>
-          </div>
-        `;
-
-        if (data.Type === "movie") {
-          document.getElementById("playBtn").addEventListener("click", () => {
-            document.getElementById("videoArea").innerHTML = `
-              <div class="video-container">
-                <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
-              </div>
-              <div class="spacer"></div>
-            `;
-          });
-        }
-
-        if (data.Type === "series") {
-          document.getElementById("playBtn").addEventListener("click", () => {
-            const season = document.getElementById("seasonInput").value || "1";
-            const episode = document.getElementById("episodeInput").value || "1";
-
-            document.getElementById("videoArea").innerHTML = `
-              <div class="video-container">
-                <iframe src="https://vidfast.pro/tv/${data.imdbID}/${season}/${episode}?autoPlay=true" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
-              </div>
-              <div class="spacer"></div>
-            `;
-          });
-        }
-      } else {
-        results.innerHTML = "<p>No results found.</p>";
+  fetch(url).then(res => res.json()).then(data => {
+    if (data.Response === "True") {
+      let playButtonHTML = "";
+      const savedProgress = getProgress()[data.imdbID] || {};
+      if (data.Type === "movie") {
+        playButtonHTML = `<div class="play-btn" id="playBtn">▶ Play</div><div id="videoArea"></div>`;
       }
-    } catch (err) {
-      results.innerHTML = "<p>Error fetching movie data.</p>";
-      console.error(err);
+      if (data.Type === "series") {
+        playButtonHTML = `
+          <div class="season-episode">
+            <input type="number" id="seasonInput" placeholder="Season" min="1" value="${savedProgress.season || 1}">
+            <input type="number" id="episodeInput" placeholder="Episode" min="1" value="${savedProgress.episode || 1}">
+            <div class="play-btn" id="playBtn">▶ Play</div>
+          </div>
+          <div id="videoArea"></div>
+        `;
+      }
+      results.innerHTML = `
+        <div class="movie">
+          <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
+          <div class="movie-details">
+            <h2>${data.Title}</h2>
+            <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
+            <p>${data.Plot}</p>
+            ${playButtonHTML}
+          </div>
+        </div>
+      `;
+
+      if (data.Type === "movie") {
+        document.getElementById("playBtn").addEventListener("click", () => {
+          document.getElementById("videoArea").innerHTML = `
+            <div class="video-container">
+              <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
+            </div>
+            <div class="spacer"></div>
+          `;
+          saveProgress(data.imdbID, { type: "movie", time: 0 }); 
+        });
+      }
+      if (data.Type === "series") {
+        document.getElementById("playBtn").addEventListener("click", () => {
+          const season = document.getElementById("seasonInput").value || 1;
+          const episode = document.getElementById("episodeInput").value || 1;
+          document.getElementById("videoArea").innerHTML = `
+            <div class="video-container">
+              <iframe src="https://vidfast.pro/tv/${data.imdbID}/${season}/${episode}?autoPlay=true" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
+            </div>
+            <div class="spacer"></div>
+          `;
+          saveProgress(data.imdbID, { type: "series", season, episode });
+        });
+      }
+    } else {
+      results.innerHTML = "<p>No results found.</p>";
     }
+  });
+}
+
+searchInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    performSearch(searchInput.value);
   }
 });
+
+loadProgressList();
 </script>
 </body>
 </html>
