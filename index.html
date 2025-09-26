@@ -1,204 +1,154 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>uvi — Home</title>
+  <meta charset="UTF-8">
+  <title>uvi</title>
   <style>
-    :root{
-      --logo-size: 48px;
-      --bg-top: #000000;
-      --bg-bottom: #1f1f1f;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, black, #222);
+      color: white;
+      min-height: 100vh;
     }
 
-    * { box-sizing: border-box; margin:0; padding:0; }
-
-    html,body {
-      height:100%;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
     }
 
-    body{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      background-attachment: fixed;
-      color:#fff;
+    header img {
+      height: 40px;
+      margin-right: 20px;
     }
 
-    header.topbar{
-      display:flex;
-      align-items:center;
-      gap:1rem;
-      padding:16px 20px;
+    .search-bar {
+      display: flex;
+      flex: 1;
+      height: 40px;
     }
 
-    .logo {
-      flex: 0 0 auto;
-      height: var(--logo-size);
-      user-select:none;
+    .search-bar input[type="text"],
+    .search-bar input[type="number"] {
+      background: black;
+      border: 1px solid white;
+      color: white;
+      border-radius: 8px;
+      padding: 0 10px;
+      font-size: 16px;
     }
 
-    .search-wrap {
-      flex:1 1 auto;
-      display:flex;
-      align-items:center;
+    .search-bar input[type="text"] {
+      flex: 7;
+      margin-right: 10px;
     }
 
-    .search-input {
-      width:100%;
-      height: var(--logo-size);
-      background:#000000;
-      color:#ffffff;
-      border:2px solid rgba(255,255,255,0.95);
-      border-radius:999px;
-      padding:0 18px;
-      font-size: calc(var(--logo-size) * 0.45);
-      outline:none;
-      caret-color:#ffffff;
+    .search-bar input[type="number"] {
+      flex: 1;
     }
 
-    .search-input:focus {
-      box-shadow:0 0 18px rgba(255,255,255,0.06);
-      border-color:#ffffff;
-    }
-
-    main {
-      flex:1;
-      padding: 30px 20px;
-    }
-
-    .movie {
-      display:flex;
-      flex-wrap:wrap;
-      gap:20px;
-      align-items:flex-start;
-    }
-
-    .movie img {
-      max-width: 300px;
-      width:100%;
-      border-radius:12px;
-      box-shadow:0 0 12px rgba(0,0,0,0.6);
-      object-fit:cover;
+    #results {
+      padding: 20px;
     }
 
     .movie-details {
-      flex:1;
-      min-width:250px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
     }
 
-    .movie-details h2 {
-      margin:0;
-      font-size:2rem;
-      font-weight:700;
+    .movie-details img {
+      max-width: 300px;
+      border-radius: 8px;
     }
 
-    .movie-details .meta {
-      margin: 8px 0;
-      font-size:1rem;
-      color:#bbb;
+    .info {
+      max-width: 600px;
     }
 
-    .movie-details p {
-      font-size:1rem;
-      line-height:1.5;
-      margin-top:12px;
+    .info h2 {
+      margin: 0;
+      font-size: 28px;
     }
 
-    .play-btn {
-      display:inline-block;
-      margin-top:20px;
-      padding:12px 30px;
-      border:2px solid #fff;
-      border-radius:999px;
-      background:#000;
-      color:#fff;
-      font-size:1.2rem;
-      cursor:pointer;
-      text-align:center;
-      user-select:none;
+    .play-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      background: black;
+      color: white;
+      border: 2px solid white;
+      font-size: 18px;
+      cursor: pointer;
     }
 
-    .video-container {
-      margin-top:25px;
-      width:100%;
-      max-width:900px;
+    iframe {
+      width: 100%;
+      height: 500px;
+      margin-top: 20px;
+      border: none;
     }
 
     .spacer {
-      height:800px;
+      height: 1000px;
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <img src="logo.png" alt="uvi logo" class="logo" />
-    <div class="search-wrap">
-      <input id="site-search" class="search-input" type="search" autocomplete="off" spellcheck="false" />
-    </div>
+  <header>
+    <img src="logo.png" alt="uvi logo">
+    <form id="search-form" class="search-bar">
+      <input type="text" id="search-input" placeholder="Search title...">
+      <input type="number" id="year-input" placeholder="Year">
+    </form>
   </header>
 
-  <main id="results">
-    <!-- Movie info and video go here -->
-  </main>
+  <main id="results"></main>
 
   <script>
-    const searchInput = document.getElementById("site-search");
-    const results = document.getElementById("results");
-    const API_KEY = "f9948667";
+    const form = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const yearInput = document.getElementById('year-input');
+    const results = document.getElementById('results');
+    const apiKey = "f9948667";
 
-    searchInput.addEventListener("keydown", async (e) => {
-      if (e.key === "Enter") {
-        const query = searchInput.value.trim();
-        if (!query) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      const year = yearInput.value.trim();
+      if (!query) return;
 
-        const url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}&plot=full&apikey=${API_KEY}`;
-        results.innerHTML = "<p>Loading...</p>";
+      let url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}&plot=full&apikey=${apiKey}`;
+      if (year) url += `&y=${encodeURIComponent(year)}`;
 
-        try {
-          const res = await fetch(url);
-          const data = await res.json();
+      const response = await fetch(url);
+      const data = await response.json();
 
-          if (data.Response === "True") {
-            let playButtonHTML = "";
-            if (data.Type === "movie") {
-              playButtonHTML = `
-                <div class="play-btn" id="playBtn">▶ Play</div>
-                <div id="videoArea"></div>
-              `;
-            }
+      if (data.Response === "True") {
+        results.innerHTML = `
+          <div class="movie-details">
+            <img src="${data.Poster}" alt="${data.Title}">
+            <div class="info">
+              <h2><b>${data.Title}</b></h2>
+              <p>${data.Year} | ${data.Rated} | ${data.Genre}</p>
+              <p>${data.Plot}</p>
+              ${data.Type === "movie" ? `<button class="play-button">▶ Play</button>` : ""}
+            </div>
+          </div>
+        `;
 
-            results.innerHTML = `
-              <div class="movie">
-                <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
-                <div class="movie-details">
-                  <h2>${data.Title}</h2>
-                  <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
-                  <p>${data.Plot}</p>
-                  ${playButtonHTML}
-                </div>
-              </div>
+        const playButton = document.querySelector('.play-button');
+        if (playButton) {
+          playButton.addEventListener('click', () => {
+            results.innerHTML += `
+              <iframe src="https://vidfast.pro/movie/${data.imdbID}" allowfullscreen></iframe>
+              <div class="spacer"></div>
             `;
-
-            if (data.Type === "movie") {
-              document.getElementById("playBtn").addEventListener("click", () => {
-                document.getElementById("videoArea").innerHTML = `
-                  <div class="video-container">
-                    <iframe src="https://vidfast.pro/movie/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
-                  </div>
-                  <div class="spacer"></div>
-                `;
-              });
-            }
-          } else {
-            results.innerHTML = "<p>No results found.</p>";
-          }
-        } catch (err) {
-          results.innerHTML = "<p>Error fetching movie data.</p>";
-          console.error(err);
+          });
         }
+      } else {
+        results.innerHTML = "<p>Movie not found.</p>";
       }
     });
   </script>
