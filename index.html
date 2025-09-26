@@ -6,117 +6,80 @@
   <title>uvi — Home</title>
   <style>
     :root{
-      /* adjust this to change logo/search height quickly */
-      --logo-size: 48px; /* height of the logo text and the search bar */
+      --logo-size: 48px; /* height of logo image and search bar */
       --bg-top: #000000;
       --bg-bottom: #1f1f1f;
     }
 
-    /* Full page reset & base */
-    * { box-sizing: border-box; }
-    html,body { height:100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    * { box-sizing: border-box; margin:0; padding:0; }
 
-    /* Background gradient page */
+    html,body {
+      height:100%;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
     body{
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      color: #fff;
       min-height:100vh;
       display:flex;
       flex-direction:column;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      background-attachment: fixed; /* makes gradient always fill */
+      color:#fff;
     }
 
-    /* Top bar */
     header.topbar{
       display:flex;
       align-items:center;
       gap:1rem;
-      padding: 16px 20px;
-      /* keep the topbar visually separated from background if desired:
-         (but you said nothing else so we keep it transparent) */
+      padding:16px 20px;
     }
 
-    /* Logo text */
     .logo {
-      font-weight:700;
-      font-size: var(--logo-size);
-      line-height: var(--logo-size);
-      letter-spacing: -0.02em;
-      color: #ffffff;
-      margin: 0;
-      /* ensure logo doesn't grow */
       flex: 0 0 auto;
-      user-select: none;
+      height: var(--logo-size);
+      user-select:none;
     }
 
-    /* Search container to make input fill remaining space */
     .search-wrap {
-      flex: 1 1 auto;
+      flex:1 1 auto;
       display:flex;
       align-items:center;
     }
 
-    /* The search input itself */
     .search-input {
       width:100%;
-      height: var(--logo-size); /* same height as logo text */
-      background: #000000; /* totally black as requested */
-      color: #ffffff;
-      border: 2px solid rgba(255,255,255,0.95); /* white outline */
-      border-radius: 999px; /* fully rounded */
-      padding: 0 18px;
+      height: var(--logo-size);
+      background:#000000;
+      color:#ffffff;
+      border:2px solid rgba(255,255,255,0.95);
+      border-radius:999px;
+      padding:0 18px;
       font-size: calc(var(--logo-size) * 0.45);
-      outline: none;
-      box-shadow: none;
-      caret-color: #ffffff;
-      /* remove inner default appearance on some browsers */
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      outline:none;
+      box-shadow:none;
+      caret-color:#ffffff;
+      -webkit-appearance:none;
+      -moz-appearance:none;
     }
 
-    /* Placeholder styling */
-    .search-input::placeholder {
-      color: rgba(255,255,255,0.7);
-    }
-
-    /* Focus state - subtle glow so it's obvious it's focused */
     .search-input:focus {
-      box-shadow: 0 0 18px rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,1);
+      box-shadow:0 0 18px rgba(255,255,255,0.06);
+      border-color:#ffffff;
     }
 
-    /* Responsive tweaks */
     @media (max-width:520px){
       :root { --logo-size: 40px; }
-      header.topbar { padding: 12px 14px; gap: 10px; }
-      .search-input { padding: 0 12px; font-size: calc(var(--logo-size) * 0.44); }
+      header.topbar { padding:12px 14px; gap:10px; }
+      .search-input { padding:0 12px; font-size: calc(var(--logo-size) * 0.44); }
     }
   </style>
 </head>
 <body>
-  <header class="topbar" role="banner">
-    <h1 class="logo" aria-hidden="true">uvi</h1>
-
+  <header class="topbar">
+    <img src="logo.png" alt="uvi logo" class="logo" />
     <div class="search-wrap">
-      <label for="site-search" class="visually-hidden">Search movies and TV shows</label>
-      <input id="site-search"
-             class="search-input"
-             type="search"
-             placeholder="Search movies, TV shows, actors..."
-             aria-label="Search movies and TV shows"
-             autocomplete="off"
-             spellcheck="false" />
+      <input id="site-search" class="search-input" type="search" autocomplete="off" spellcheck="false" />
     </div>
   </header>
-
-  <!-- Nothing else for now — page intentionally empty per your request -->
-
-  <script>
-    // small accessibility helper: visually-hidden class used above
-    (function() {
-      const style = document.createElement('style');
-      style.textContent = '.visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px;}';
-      document.head.appendChild(style);
-    })();
-  </script>
 </body>
 </html>
