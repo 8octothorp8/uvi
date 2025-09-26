@@ -6,7 +6,7 @@
   <title>uvi — Home</title>
   <style>
     :root{
-      --logo-size: 48px; /* height of logo image and search bar */
+      --logo-size: 48px;
       --bg-top: #000000;
       --bg-bottom: #1f1f1f;
     }
@@ -23,7 +23,7 @@
       display:flex;
       flex-direction:column;
       background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      background-attachment: fixed; /* makes gradient always fill */
+      background-attachment: fixed;
       color:#fff;
     }
 
@@ -56,10 +56,7 @@
       padding:0 18px;
       font-size: calc(var(--logo-size) * 0.45);
       outline:none;
-      box-shadow:none;
       caret-color:#ffffff;
-      -webkit-appearance:none;
-      -moz-appearance:none;
     }
 
     .search-input:focus {
@@ -67,10 +64,47 @@
       border-color:#ffffff;
     }
 
-    @media (max-width:520px){
-      :root { --logo-size: 40px; }
-      header.topbar { padding:12px 14px; gap:10px; }
-      .search-input { padding:0 12px; font-size: calc(var(--logo-size) * 0.44); }
+    main {
+      flex:1;
+      padding: 30px 20px;
+    }
+
+    .movie {
+      display:flex;
+      flex-wrap:wrap;
+      gap:20px;
+      align-items:flex-start;
+    }
+
+    .movie img {
+      max-width: 300px;
+      width:100%;
+      border-radius:12px;
+      box-shadow:0 0 12px rgba(0,0,0,0.6);
+      object-fit:cover;
+    }
+
+    .movie-details {
+      flex:1;
+      min-width:250px;
+    }
+
+    .movie-details h2 {
+      margin:0;
+      font-size:2rem;
+      font-weight:700;
+    }
+
+    .movie-details .meta {
+      margin: 8px 0;
+      font-size:1rem;
+      color:#bbb;
+    }
+
+    .movie-details p {
+      font-size:1rem;
+      line-height:1.5;
+      margin-top:12px;
     }
   </style>
 </head>
@@ -81,5 +115,48 @@
       <input id="site-search" class="search-input" type="search" autocomplete="off" spellcheck="false" />
     </div>
   </header>
+
+  <main id="results">
+    <!-- Movie info will show up here -->
+  </main>
+
+  <script>
+    const searchInput = document.getElementById("site-search");
+    const results = document.getElementById("results");
+    const API_KEY = "f9948667";
+
+    searchInput.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter") {
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        const url = `https://www.omdbapi.com/?t=${encodeURIComponent(query)}&plot=full&apikey=${API_KEY}`;
+        results.innerHTML = "<p>Loading...</p>";
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (data.Response === "True") {
+            results.innerHTML = `
+              <div class="movie">
+                <img src="${data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Poster"}" alt="Poster of ${data.Title}">
+                <div class="movie-details">
+                  <h2>${data.Title}</h2>
+                  <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
+                  <p>${data.Plot}</p>
+                </div>
+              </div>
+            `;
+          } else {
+            results.innerHTML = "<p>No results found.</p>";
+          }
+        } catch (err) {
+          results.innerHTML = "<p>Error fetching movie data.</p>";
+          console.error(err);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
