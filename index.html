@@ -153,8 +153,14 @@ function removeFromProgress(id) {
 
 function loadProgressList() {
   const data = getProgress();
+  results.innerHTML = ""; // Clear everything
+
   if (Object.keys(data).length === 0) return;
-  results.innerHTML = "<h3>Watch History</h3>";
+
+  const header = document.createElement("h3");
+  header.innerText = "Watch History";
+  results.appendChild(header);
+
   const container = document.createElement("div");
   container.className = "progress-list";
   results.appendChild(container);
@@ -174,6 +180,7 @@ function loadProgressList() {
 
         const menuButton = item.querySelector(".menu-button");
         const menu = item.querySelector(".menu");
+
         menuButton.addEventListener("click", () => {
           menu.style.display = menu.style.display === "block" ? "none" : "block";
         });
