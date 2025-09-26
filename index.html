@@ -106,6 +106,30 @@
       line-height:1.5;
       margin-top:12px;
     }
+
+    .play-btn {
+      display:inline-block;
+      margin-top:20px;
+      padding:12px 30px;
+      border:2px solid #fff;
+      border-radius:999px;
+      background:#000;
+      color:#fff;
+      font-size:1.2rem;
+      cursor:pointer;
+      text-align:center;
+      user-select:none;
+    }
+
+    .video-container {
+      margin-top:25px;
+      width:100%;
+      max-width:900px;
+    }
+
+    .spacer {
+      height:800px; /* big chunk of space to push down popups */
+    }
   </style>
 </head>
 <body>
@@ -117,7 +141,7 @@
   </header>
 
   <main id="results">
-    <!-- Movie info will show up here -->
+    <!-- Movie info and video go here -->
   </main>
 
   <script>
@@ -145,9 +169,20 @@
                   <h2>${data.Title}</h2>
                   <div class="meta">${data.Year} • ${data.Rated} • ${data.Genre}</div>
                   <p>${data.Plot}</p>
+                  <div class="play-btn" id="playBtn">▶ Play</div>
+                  <div id="videoArea"></div>
                 </div>
               </div>
             `;
+
+            document.getElementById("playBtn").addEventListener("click", () => {
+              document.getElementById("videoArea").innerHTML = `
+                <div class="video-container">
+                  <iframe src="https://vidfast.pro/e/${data.imdbID}" frameborder="0" allowfullscreen width="100%" height="500"></iframe>
+                </div>
+                <div class="spacer"></div>
+              `;
+            });
           } else {
             results.innerHTML = "<p>No results found.</p>";
           }
